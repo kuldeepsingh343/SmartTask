@@ -6,6 +6,8 @@ struct TimerView: View {
     @State private var isRunning = false
     @State private var elapsedTime: TimeInterval = 0
     @State private var timer: Timer?
+    @State private var startTime: Date?
+    @State private var accumulatedTime: TimeInterval = 0
     
     var activeTasks: [TaskItem] {
         store.tasks.filter { !$0.isCompleted }
@@ -76,6 +78,11 @@ struct TimerView: View {
             }
             .padding()
             .navigationTitle("Focus Timer")
+            .onDisappear {
+                if isRunning {
+                    toggleTimer()
+                }
+            }
         }
     }
     
@@ -83,10 +90,14 @@ struct TimerView: View {
         if isRunning {
             timer?.invalidate()
             isRunning = false
+            accumulatedTime = elapsedTime
         } else {
             isRunning = true
+            startTime = Date()
             timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-                elapsedTime += 1
+                if let start = startTime {
+                    elapsedTime = accumulatedTime + Date().timeIntervalSince(start)
+                }
             }
         }
     }
@@ -100,6 +111,8 @@ struct TimerView: View {
         }
         
         elapsedTime = 0
+        accumulatedTime = 0
+        startTime = nil
         selectedTaskId = nil
     }
 }
