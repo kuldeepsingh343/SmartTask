@@ -1,0 +1,12 @@
+# Xcode
+#
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/
+*.noindex
+.DS_Store
+*.swp
+*.lock
+*~
